@@ -1,0 +1,11 @@
+main
+main.exe
+
+.vscode/
+
+*.o
+*.obj
+*.out
+
+*.log
+*.tmp
