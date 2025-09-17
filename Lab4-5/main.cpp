@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 
 class Antenna {
@@ -37,7 +36,7 @@ public:
     }
 
     ~Antenna() {
-      
+        std::cout << "Antenna of type " << type << " is being destroyed." << std::endl;
     }
 
     std::string getType() const { return type; }
