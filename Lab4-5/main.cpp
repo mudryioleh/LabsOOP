@@ -7,26 +7,29 @@ class Antenna {
 private:
     string type;
     double gain_factor;       
-    double frequency_range;
+    double freq_min;  
+    double freq_max;  
 
 public:
     Antenna() {
         type = "Default";
         gain_factor = 1.0;
-        frequency_range = 100.0;
+        freq_min = 100.0;
+        freq_max = 200.0;
         cout << "Створено антену за замовчуванням.\n";
     }
 
-    Antenna(string t, double g, double f) {
+    Antenna(string t, double g, double fmin, double fmax) {
         setType(t);
         setGain(g);
-        setFrequency(f);
+        setFrequencyRange(fmin, fmax);
         cout << "Створено антену з параметрами.\n";
     }
 
     ~Antenna() {
         cout << "Знищено антену: " << type << endl;
     }
+
     void setType(string t) {
         if (t.empty()) {
             cout << "Помилка: тип антени не може бути порожнім!\n";
@@ -45,12 +48,14 @@ public:
         }
     }
 
-    void setFrequency(double f) {
-        if (f <= 0) {
-            cout << "Помилка: частотний діапазон має бути > 0!\n";
-            frequency_range = 100.0;
+    void setFrequencyRange(double fmin, double fmax) {
+        if (fmin <= 0 || fmax <= 0 || fmin >= fmax) {
+            cout << "Помилка: некоректний діапазон!\n";
+            freq_min = 100.0;
+            freq_max = 200.0;
         } else {
-            frequency_range = f;
+            freq_min = fmin;
+            freq_max = fmax;
         }
     }
 
@@ -60,18 +65,26 @@ public:
         cin >> type;
         cout << "Коефіцієнт підсилення: ";
         cin >> gain_factor;
-        cout << "Частотний діапазон: ";
-        cin >> frequency_range;
+        cout << "Нижня межа діапазону: ";
+        cin >> freq_min;
+        cout << "Верхня межа діапазону: ";
+        cin >> freq_max;
+
+        setFrequencyRange(freq_min, freq_max);
     }
 
     void display() const {
         cout << "Антена [Тип: " << type
              << ", Підсилення: " << gain_factor
-             << ", Частотний діапазон: " << frequency_range << " МГц]\n";
+             << ", Діапазон: " << freq_min << "-" << freq_max << " МГц]\n";
     }
 
     bool hasGainMoreThan(double N) const {
         return gain_factor > N;
+    }
+
+    bool supportsFrequency(double f) const {
+        return (f >= freq_min && f <= freq_max);
     }
 };
 
@@ -79,7 +92,7 @@ int main() {
     Antenna defaultAntenna;
     defaultAntenna.display();
 
-    Antenna dipoleAntenna("Dipole", 2.5, 500.0);
+    Antenna dipoleAntenna("Dipole", 2.5, 300.0, 600.0);
     dipoleAntenna.display();
 
     Antenna copiedAntenna;
@@ -98,6 +111,18 @@ int main() {
     }
     if (!found) {
         cout << "Немає антен з таким коефіцієнтом підсилення.\n";
+    }
+
+    cout << "\n--- Антени, що підтримують частоту 400 МГц ---\n";
+    found = false;
+    for (const auto &ant : antennas) {
+        if (ant.supportsFrequency(400.0)) {
+            ant.display();
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Немає антен, що підтримують 400 МГц.\n";
     }
 
     return 0;
