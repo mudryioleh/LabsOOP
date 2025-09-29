@@ -1,136 +1,103 @@
 #include <iostream>
 #include <vector>
+#include <string>
+using namespace std;
 
 class Antenna {
 private:
-    std::string type;
-    float gain_factor;
-    float frequency_range;
+    string type;
+    double gain_factor;       
+    double frequency_range;
 
 public:
     Antenna() {
         type = "Default";
         gain_factor = 1.0;
         frequency_range = 100.0;
+        cout << "Створено антену за замовчуванням.\n";
     }
 
-    Antenna(std::string t, float g, float f) {
-        type = t;
-        setGain(g); 
+    Antenna(string t, double g, double f) {
+        setType(t);
+        setGain(g);
         setFrequency(f);
-    }
-
-    Antenna(const Antenna& other) {
-        type = other.type;
-        gain_factor = other.gain_factor;
-        frequency_range = other.frequency_range;
-    }
-
-    Antenna& operator=(const Antenna& other) {
-        if (this != &other) {
-            type = other.type;
-            gain_factor = other.gain_factor;
-            frequency_range = other.frequency_range;
-        }
-        return *this;
+        cout << "Створено антену з параметрами.\n";
     }
 
     ~Antenna() {
-        std::cout << "Antenna of type " << type << " is being destroyed." << std::endl;
+        cout << "Знищено антену: " << type << endl;
+    }
+    void setType(string t) {
+        if (t.empty()) {
+            cout << "Помилка: тип антени не може бути порожнім!\n";
+            type = "Unknown";
+        } else {
+            type = t;
+        }
     }
 
-    std::string getType() const { return type; }
-    float getGain() const { return gain_factor; }
-    float getFrequency() const { return frequency_range; }
-
-    void setType(std::string t) {
-        type = t;
-    }
-
-    void setGain(float g) {
-        if (g > 0) {
+    void setGain(double g) {
+        if (g <= 0) {
+            cout << "Помилка: коефіцієнт підсилення має бути > 0!\n";
+            gain_factor = 1.0;
+        } else {
             gain_factor = g;
-        } else {
-            std::cout << "Invalid gain value: must be greater than 0." << std::endl;
         }
     }
 
-    void setFrequency(float f) {
-        if (f > 0) {
+    void setFrequency(double f) {
+        if (f <= 0) {
+            cout << "Помилка: частотний діапазон має бути > 0!\n";
+            frequency_range = 100.0;
+        } else {
             frequency_range = f;
-        } else {
-            std::cout << "Invalid frequency range: must be greater than 0." << std::endl;
         }
     }
 
-
-    void inputData() {
-        std::cout << "Enter antenna type: ";
-        std::cin >> type;
-
-        do {
-            std::cout << "Enter gain factor (> 0): ";
-            std::cin >> gain_factor;
-            if (gain_factor <= 0) {
-                std::cout << "Invalid gain value: must be greater than 0. Try again." << std::endl;
-            }
-        } while (gain_factor <= 0);
-
-        do {
-            std::cout << "Enter frequency range (> 0): ";
-            std::cin >> frequency_range;
-            if (frequency_range <= 0) {
-                std::cout << "Invalid frequency range: must be greater than 0. Try again." << std::endl;
-            }
-        } while (frequency_range <= 0);
+    void input() {
+        cout << "\nВведіть дані для антени:\n";
+        cout << "Тип: ";
+        cin >> type;
+        cout << "Коефіцієнт підсилення: ";
+        cin >> gain_factor;
+        cout << "Частотний діапазон: ";
+        cin >> frequency_range;
     }
 
-    void displayInfo() const {
-        std::cout << "Antenna Info: Type: " << type << ", Gain factor: " << gain_factor << ", Frequency range: " << frequency_range << std::endl;
+    void display() const {
+        cout << "Антена [Тип: " << type
+             << ", Підсилення: " << gain_factor
+             << ", Частотний діапазон: " << frequency_range << " МГц]\n";
     }
 
-    bool matchesGainCriterion(float min_gain) const {
-        return gain_factor >= min_gain;
+    bool hasGainMoreThan(double N) const {
+        return gain_factor > N;
     }
 };
 
 int main() {
-   
     Antenna defaultAntenna;
-    defaultAntenna.displayInfo();
+    defaultAntenna.display();
 
-    Antenna dipoleAntenna("Dipole", 2.15, 300.0); 
-    dipoleAntenna.displayInfo();
+    Antenna dipoleAntenna("Dipole", 2.5, 500.0);
+    dipoleAntenna.display();
 
-    Antenna copiedAntenna(dipoleAntenna);
-    copiedAntenna.displayInfo();
+    Antenna copiedAntenna;
+    copiedAntenna.input();
+    copiedAntenna.display();
 
-    Antenna userInputAntenna;
-    userInputAntenna.inputData();
-    userInputAntenna.displayInfo();
+    vector<Antenna> antennas = {defaultAntenna, dipoleAntenna, copiedAntenna};
 
-    defaultAntenna.setGain(1.5);  
-    defaultAntenna.setFrequency(200.0);  
-    defaultAntenna.setGain(-1.0); 
-    defaultAntenna.displayInfo();
-
-    Antenna assignedAntenna;
-    assignedAntenna = dipoleAntenna;
-    assignedAntenna.displayInfo();
-
-    std::vector<Antenna> antennas = {defaultAntenna, dipoleAntenna, copiedAntenna, userInputAntenna, assignedAntenna};
-
-    float min_gain = 2.0;
-    std::cout << "Antennas with gain factor >= " << min_gain << ":" << std::endl;
+    cout << "\n--- Антени з підсиленням більше ніж 2.0 ---\n";
     bool found = false;
-    for (const auto& ant : antennas) {
-        if (ant.matchesGainCriterion(min_gain)) {
-            ant.displayInfo();
+    for (const auto &ant : antennas) {
+        if (ant.hasGainMoreThan(2.0)) {
+            ant.display();
             found = true;
         }
     }
     if (!found) {
-        std::cout << "No antennas match the criterion." << std::endl;
+        cout << "Немає антен з таким коефіцієнтом підсилення.\n";
     }
 
     return 0;
