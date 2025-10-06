@@ -62,7 +62,11 @@ public:
     void input() {
         cout << "\nВведіть дані для антени:\n";
         cout << "Тип: ";
-        cin >> type;
+        
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Тип: ";
+        getline(cin, type);
+
         cout << "Коефіцієнт підсилення: ";
         cin >> gain_factor;
         cout << "Нижня межа діапазону: ";
