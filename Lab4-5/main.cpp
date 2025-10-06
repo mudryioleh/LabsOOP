@@ -61,9 +61,7 @@ public:
 
     void input() {
         cout << "\nВведіть дані для антени:\n";
-        cout << "Тип: ";
-        
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         cout << "Тип: ";
         getline(cin, type);
 
