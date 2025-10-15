@@ -19,7 +19,7 @@ void Antenna::inputAntenna(int index) {
     }
 
     std::cout << "Введіть дані для антени " << index + 1 << ":\n";
-    
+
     std::cout << "Тип: ";
     std::string type;
     std::getline(std::cin, type);
@@ -28,23 +28,28 @@ void Antenna::inputAntenna(int index) {
         return;
     }
 
-    std::cout << "Коефіцієнт підсилення (дБ): ";
+    std::cout << "Коефіціент підсилення (дБ): ";
     float gain;
     std::cin >> gain;
     if (!setGainFactor(index, gain)) {
         std::cout << "Помилка: Некоректний коефіцієнт підсилення!\n";
+        std::cin.ignore(1000, '\n');
         return;
     }
+
+    std::cin.ignore(1000, '\n');
 
     std::cout << "Частота (МГц): ";
     float range;
     std::cin >> range;
     if (!setFrequencyRange(index, range)) {
         std::cout << "Помилка: Некоректна частота!\n";
+        std::cin.ignore(1000, '\n');
         return;
     }
+    
+    std::cin.ignore(1000, '\n');
 
-    std::cin.ignore();
     std::cout << "Дані успішно введено для антени " << index + 1 << "!\n";
 }
 
