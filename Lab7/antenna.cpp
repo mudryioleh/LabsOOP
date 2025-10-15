@@ -23,8 +23,11 @@ void Antenna::inputAntenna() {
 
     cout << "Коефіцієнт підсилення (дБ): ";
     cin >> antenna.gain_factor;
-    if (antenna.gain_factor <= 0.0f) {
+    
+    if (cin.fail() || antenna.gain_factor <= 0.0f) {
         cout << "Помилка: Некоректний коефіцієнт підсилення!\n";
+        cin.clear(); 
+        cin.ignore(1000, '\n');
         return;
     }
 
@@ -32,12 +35,16 @@ void Antenna::inputAntenna() {
     cin >> antenna.frequency_min;
     cout << "Максимальна частота (МГц): ";
     cin >> antenna.frequency_max;
-    if (antenna.frequency_min < 0.0f || antenna.frequency_max < antenna.frequency_min) {
+
+    if (cin.fail() || antenna.frequency_min < 0.0f || antenna.frequency_max < antenna.frequency_min) {
         cout << "Помилка: Некоректний діапазон частот!\n";
+        cin.clear();
+        cin.ignore(1000, '\n');
         return;
     }
 
-    cin.ignore();
+    cin.ignore(1000, '\n');
+    
     addAntenna(antenna);
     cout << "Антену успішно додано!\n";
 }
