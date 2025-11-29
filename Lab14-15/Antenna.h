@@ -16,6 +16,8 @@ public:
     Antenna();
     Antenna(string t, double g, string f);
 
+    bool input();
+    
     string getType() const;
     double getGain() const;
     string getFreqRange() const;

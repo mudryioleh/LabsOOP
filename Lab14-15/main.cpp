@@ -32,20 +32,37 @@ int main() {
 
     do {
         printMenu();
-        cin >> choice;
+
+        while (!(cin >> choice)) {
+            cout << "Invalid input. Enter a number: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
 
         switch (choice) {
-        case 1:
-            list.pushFront(createAntenna());
+        case 1: {
+            Antenna temp; 
+            if (temp.input()) { // Якщо ввели правильно - додаємо
+                list.pushFront(temp);
+            }
             break;
-        case 2:
-            list.pushBack(createAntenna());
+        }
+        case 2: {
+            Antenna temp;
+            if (temp.input()) {
+                list.pushBack(temp);
+            }
             break;
+        }
         case 3: {
             int idx;
             cout << "Enter index to insert after: ";
             cin >> idx;
-            list.insertAfter(idx, createAntenna());
+            
+            Antenna temp;
+            if (temp.input()) { // Спочатку вводимо дані, якщо ОК - вставляємо
+                list.insertAfter(idx, temp);
+            }
             break;
         }
         case 4:
@@ -55,8 +72,11 @@ int main() {
             list.popBack();
             break;
         case 6: {
-            cout << "Enter details of antenna to remove:" << endl;
-            list.removeByValue(createAntenna());
+            cout << "Введіть дані антени, яку треба видалити:" << endl;
+            Antenna temp;
+            if (temp.input()) {
+                list.removeByValue(temp);
+            }
             break;
         }
         case 7:
