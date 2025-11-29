@@ -1,4 +1,5 @@
 #include "derived_transistors.h"
+#include <limits>
 
 
 BipolarTransistor::BipolarTransistor(string m, double p, double g, string t) 
@@ -11,8 +12,14 @@ BipolarTransistor::BipolarTransistor(string m, double p, double g, string t)
 void BipolarTransistor::input() {
     Transistor::input(); 
     cout << "Enter Gain (hFE): ";
-    cin >> gain;
+    while (!(cin >> gain)) {
+        cout << "Invalid input. Enter a number for Gain: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
     if (gain < 0) throw InvalidDataException("Input Error: Gain cannot be negative.");
+    
     cout << "Enter Type (NPN/PNP): ";
     cin >> type;
 }
